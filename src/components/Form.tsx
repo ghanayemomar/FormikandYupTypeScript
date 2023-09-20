@@ -5,7 +5,7 @@ import { Button, Card } from "react-bootstrap";
 import { basicSchema } from "../schemas";
 import CustomCheckBox from "./CustomCheckBox";
 import CustomDropDown from "./CustomDropDown";
-
+import { Formik } from "../Types/Input";
 const onSubmit = async (values: any, action: any) => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   action.resetForm();
@@ -18,6 +18,16 @@ const genderOptions = [
   { value: "Female", label: "Female" },
   { value: "Others", label: "Others" },
 ];
+const initalValues: Formik.initalValues = {
+  email: "",
+  age: null,
+  password: "",
+  confirmPassword: "",
+  acceptTerms: false,
+  selectGender: null,
+  favDate: "",
+};
+
 function Form() {
   const {
     values,
@@ -28,15 +38,7 @@ function Form() {
     handleSubmit,
     isSubmitting,
   } = useFormik({
-    initialValues: {
-      email: "",
-      age: "",
-      password: "",
-      confirmPassword: "",
-      acceptTerms: false,
-      selectGender: "",
-      favDate: "",
-    },
+    initialValues: initalValues,
     onSubmit,
     validationSchema: basicSchema,
   });
@@ -59,19 +61,17 @@ function Form() {
           value={values.email}
           onChange={handleChange}
           onBlur={handleBlur}
-          errorMessage={errors.email}
-          touched={touched.email}
+          errorMessage={touched.email && errors.email}
         />
         <CustomInput
           label="Age"
           id="age"
           type="number"
           placeholder="Enter Your Age"
-          value={values.age}
+          value={values.age ? `${values.age}` : "0"}
           onChange={handleChange}
           onBlur={handleBlur}
-          errorMessage={errors.age}
-          touched={touched.age}
+          errorMessage={touched.age && errors.age}
         />
         <CustomInput
           label="Password"
@@ -81,8 +81,7 @@ function Form() {
           value={values.password}
           onChange={handleChange}
           onBlur={handleBlur}
-          errorMessage={errors.password}
-          touched={touched.password}
+          errorMessage={touched.password && errors.password}
         />
         <CustomInput
           label="Confirm Password"
@@ -92,25 +91,23 @@ function Form() {
           value={values.confirmPassword}
           onChange={handleChange}
           onBlur={handleBlur}
-          errorMessage={errors.confirmPassword}
-          touched={touched.confirmPassword}
+          errorMessage={touched.confirmPassword && errors.confirmPassword}
         />
         <CustomInput
           label="Enter your favourite date"
           id="favDate"
           type="date"
           placeholder="Enter your favourite date"
-          value={values.favDate}
+          value={values.favDate ? `${values.favDate}` : ""}
           onChange={handleChange}
           onBlur={handleBlur}
-          errorMessage={errors.favDate}
-          touched={touched.favDate}
+          errorMessage={touched.favDate && errors.favDate}
         />
         <CustomDropDown
           label="Gender"
           id="selectGender"
-          errorMessage={errors.selectGender}
-          value={values.selectGender}
+          errorMessage={touched.selectGender && errors.selectGender}
+          value={values.selectGender ? `${values.selectGender}` : ""}
           onChange={handleChange}
           onBlur={handleBlur}
           options={genderOptions}
@@ -122,7 +119,7 @@ function Form() {
           value={values.acceptTerms}
           id="acceptTerms"
           onChange={handleChange}
-          errorMessage={errors.acceptTerms}
+          errorMessage={touched.acceptTerms && errors.acceptTerms}
           touched={touched.acceptTerms}
         />
         <Button
